@@ -1,0 +1,18 @@
+# task 3
+  - name: "Change grub settings"
+    ansible.builtin.lineinfile:
+     state: present
+     dest: /etc/default/grub
+     backrefs: yes
+     regexp: "{{ item.regexp }}"
+     line: "{{ item.line }}"
+    with_items:
+     - {regexp: '^(GRUB_CMDLINE_LINUX=(?!.* net.ifnames)\"[^\"]+)(\".*)', line: '\1 net.ifnames=0\2'}
+     - {regexp: '^(GRUB_CMDLINE_LINUX=(?!.* biosdevname)\"[^\"]+)(\".*)', line: '\1 biosdevnamet=0\2'}
+
+  - name: "Execute grub2-mkconfig"
+    ansible.builtin.command: grub2-mkconfig
+    register: myoutput
+
+  - name: "Print output for grub2-mconfig"
+    ansible.builtin.debug: var=myoutput.stderr_lines

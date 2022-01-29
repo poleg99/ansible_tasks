@@ -1,0 +1,17 @@
+# task 2
+  - name: "Remove apache web server"
+    ansible.builtin.package:
+      pkg: "{{ web_server_pkg_name }}"
+      state: absent
+      update_cache: true
+    register: package_check
+
+  - name: "Delete our landing file"
+    ansible.builtin.file:
+      path: "/var/www/html/index.html"
+      state: absent
+
+  - name: "Print execution results"
+    ansible.builtin.debug:
+      msg: "Package {{ web_server_pkg_name }} is removed"
+    when: package_check is succeeded

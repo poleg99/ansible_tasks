@@ -1,0 +1,11 @@
+
+  - name: "Permit traffic in default zone for http service"
+    ansible.posix.firewalld:
+     service: "{{ web_server_port }}"
+     permanent: yes
+     state: disabled
+
+  - name: "Restart service firewalld"
+    ansible.builtin.service:
+      name: firewalld
+      state: restarted
