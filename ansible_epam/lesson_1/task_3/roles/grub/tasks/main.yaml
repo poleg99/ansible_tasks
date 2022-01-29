@@ -14,5 +14,5 @@
     ansible.builtin.command: grub2-mkconfig
     register: myoutput
 
-  - name: "Print output for grub2-mconfig"
+  - name: "Print output for grub2-mkconfig"
     ansible.builtin.debug: var=myoutput.stderr_lines
