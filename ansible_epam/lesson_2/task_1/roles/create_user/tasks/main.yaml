@@ -1,0 +1,10 @@
+  - name: Create Users, Comment = email, Home Directory and using password from Vault
+    ansible.builtin.user:
+      name: "{{ item }}"
+      comment: "{{ item }}@example.com"
+      password: "{{ user_pass | password_hash('sha512') }}"
+      state: present
+      createhome: yes
+      update_password: on_create
+    with_items:
+      - "{{ names }}"
