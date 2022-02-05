@@ -1,0 +1,21 @@
+# General settings
+
+listen=YES
+listen_ipv6=NO
+connect_from_port_20={{ 'YES' if vsftpd_connect_from_port_20 else 'NO' }}
+pam_service_name={{ ftp_server_pkg_name }}
+write_enable=YES
+pasv_enable={{ 'YES' if vsftpd_pasv_enable else 'NO'}}
+pasv_min_port=10090
+pasv_max_port=10100
+
+# Anon settings
+
+anonymous_enable={{ 'YES' if vsftpd_anonymous_enable else 'NO' }}
+anon_mkdir_write_enable={{ 'YES' if vsftpd_anon_mkdir_write_enable else 'NO' }}
+no_anon_password={{ 'YES' if vsftpd_no_anon_password_enable else 'NO' }}
+anon_upload_enable={{ 'YES' if vsftpd_anon_upload_enable else 'NO' }}
+{% if vsftpd_anon_root is defined %}
+anon_root={{ vsftpd_anon_root }}
+{% endif %}
+anon_umask=022

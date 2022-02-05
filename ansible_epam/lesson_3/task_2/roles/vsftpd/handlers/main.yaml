@@ -1,0 +1,4 @@
+- name: restart {{ ftp_server_pkg_name }}
+  ansible.builtin.systemd:
+    name: "{{ ftp_server_pkg_name }}"
+    state: restarted

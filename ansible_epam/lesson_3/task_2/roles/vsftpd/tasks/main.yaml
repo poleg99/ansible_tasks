@@ -1,0 +1,69 @@
+# instal vsftpd
+  - name: "Install {{ ftp_server_pkg_name }} server"
+    ansible.builtin.package:
+      pkg: "{{ item }}"
+      state: latest
+      update_cache: true
+    loop:
+      - "{{ ftp_server_pkg_name }}"
+      - policycoreutils-python-utils
+    register: package_check
+    when:
+      ansible_distribution == "CentOS"
+
+  - name: "Print execution results"
+    ansible.builtin.debug:
+      msg: "Package {{ ftp_server_pkg_name }} is installed"
+    when: package_check is succeeded
+
+  - include_tasks: selinux.yaml
+    when: ansible_selinux is defined and ansible_selinux != false and ansible_selinux.status == 'enabled'
+
+  - name: "Create upload folder {{ vsftpd_anon_upload_folder }}"
+    ansible.builtin.file:
+      path: "{{ vsftpd_anon_upload_folder }}"
+      state: directory
+    when: package_check is succeeded
+
+  - name: "Check anon_root folders"
+    ansible.builtin.file:
+     path: "{{ item }}"
+     state: directory
+     owner: "{{ vsftpd_owner }}"
+     group: "{{ vsftpd_group }}"
+     mode: '0555'
+     setype: "{{ vsftpd_setype }}"
+    loop:
+      - "{{ vsftpd_anon_root }}"
+    when: vsftpd_anon_root is defined
+
+  - name: "Check anon_upload folders"
+    ansible.builtin.file:
+     path: "{{ item }}"
+     state: directory
+     owner: "{{ vsftpd_owner }}"
+     group: "{{ vsftpd_group }}"
+     mode: '0755'
+     setype: "{{ vsftpd_setype }}"
+    loop:
+      - "{{ vsftpd_anon_upload_folder }}"
+    when: vsftpd_anon_upload_folder is defined
+
+  - name: "Set ftp user home dir to {{ vsftpd_anon_upload_folder }}"
+    ansible.builtin.user:
+      name: "{{ vsftpd_group }}"
+      home: "{{ vsftpd_anon_upload_folder }}"
+
+  - name: "Install {{ ftp_server_pkg_name }} configuration file"
+    ansible.builtin.template:
+      src:   etc_vsftpd_vsftpd.conf.j2
+      dest: "{{ ftpd_config_file }}"
+      mode: '0600'
+    when: package_check is succeeded
+    notify: restart {{ ftp_server_pkg_name }}
+
+  - name: "Check that {{ ftp_server_pkg_name }} is running and enabled"
+    ansible.builtin.service:
+      name: "{{ ftp_server_pkg_name }}"
+      state: started
+      enabled: yes

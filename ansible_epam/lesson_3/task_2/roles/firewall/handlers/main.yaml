@@ -1,0 +1,4 @@
+- name: restart firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    state: restarted

@@ -1,0 +1,9 @@
+
+  - name: "Permit traffic in default zone for http service"
+    ansible.posix.firewalld:
+     port: "{{ item }}"
+     permanent: yes
+     state: enabled
+    loop:
+      - "{{ web_server_port }}"
+    notify: restart firewalld

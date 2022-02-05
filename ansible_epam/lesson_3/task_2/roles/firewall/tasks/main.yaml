@@ -1,0 +1,10 @@
+
+  - name: "Permit traffic in default zone for {{ ftp_server_port }} ports"
+    ansible.posix.firewalld:
+     port: "{{ item }}"
+     permanent: yes
+     state: enabled
+    loop:
+      - "{{ ftp_server_port }}"
+      - "{{ vsftpd_pasv_port }}"
+    notify: restart firewalld

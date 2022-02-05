@@ -1,0 +1,4 @@
+- name: restart httpd
+  ansible.builtin.systemd:
+    name: "{{ web_server_pkg_name }}"
+    state: restarted

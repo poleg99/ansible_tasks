@@ -1,0 +1,8 @@
+---
+- hosts: "all" # применяем команды ко всем хостам из inventory
+  become: true # становимся привилегированным пользователем
+  vars_files:
+    - group_vars/nodes # добавляем переменные
+  roles:
+  - vsftpd
+  - firewall

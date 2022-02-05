@@ -1,0 +1,29 @@
+# instal httpd
+  - name: "Install apache web server"
+    ansible.builtin.package:
+      pkg: "{{ web_server_pkg_name }}"
+      state: latest
+      update_cache: true
+    register: package_check
+    when:
+      ansible_distribution == "CentOS"
+    notify: restart httpd
+
+  - name: "Print execution results"
+    ansible.builtin.debug:
+      msg: "Package {{ web_server_pkg_name }} is installed"
+    when: package_check is succeeded
+
+  - name: "Copy our landing to /var/www/html/"
+    ansible.builtin.copy:
+      src: "files/html"
+      dest: "/var/www/"
+      owner: "vagrant"
+      group: "vagrant"
+      mode: "0644"
+
+  - name: "Check that httpd is running and enabled"
+    ansible.builtin.service:
+      name: "{{ web_server_pkg_name }}"
+      state: started
+      enabled: yes

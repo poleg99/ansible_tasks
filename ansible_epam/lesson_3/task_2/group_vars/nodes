@@ -1,0 +1,16 @@
+---
+ftp_server_port: 20-21/tcp
+ftp_server_pkg_name: vsftpd
+ftpd_config_file: /etc/vsftpd/vsftpd.conf
+vsftpd_anonymous_enable: true
+vsftpd_no_anon_password_enable: true
+vsftpd_anon_upload_enable: true
+vsftpd_anon_mkdir_write_enable: true
+vsftpd_anon_root: /var/ftp/pub
+vsftpd_anon_upload_folder: /var/ftp/pub/upload
+vsftpd_connect_from_port_20: true
+vsftpd_owner: ftp
+vsftpd_group: ftp
+vsftpd_setype: public_content_t
+vsftpd_pasv_enable: true
+vsftpd_pasv_port: 10090-10100/tcp
